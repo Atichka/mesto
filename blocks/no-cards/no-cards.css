@@ -1,0 +1,6 @@
+@import url(../no-cards/__text/no-cards__text.css);
+
+.no-cards {
+    height: 70px;
+    display: flex;
+}

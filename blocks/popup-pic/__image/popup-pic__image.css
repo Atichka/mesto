@@ -1,0 +1,6 @@
+.popup-pic__image {
+    max-width: 80vw;
+    max-height: 80vh;
+    position: relative;
+    padding: 34px 36px;    
+}

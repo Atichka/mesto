@@ -1,0 +1,9 @@
+@import url(../popup/__content/popup__content.css);
+@import url(../popup/__close/popup__close.css);
+@import url(../popup/__title/popup__title.css);
+@import url(../popup/__form/popup__form.css);
+@import url(../popup/__input/popup__input.css);
+@import url(./__button/popup-edit__button.css);
+@import url(../popup/__button_disabled/popup__button_disabled.css);
+@import url(./_is-opened/popip-edit_is-opened.css);
+@import url(../popup/__error/popup__error.css);
