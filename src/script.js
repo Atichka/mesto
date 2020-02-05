@@ -488,3 +488,4 @@ window.addEventListener('load',function()
     console.log(`Ошибка: ${err}`);
   })
 })
+export {Card, ApiUser, ApiCard};
