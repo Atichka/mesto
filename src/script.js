@@ -72,13 +72,17 @@ class Popup {
     this.name = form.elements.name;
   }
 
-  openClosePopup() {
-    this.popupElement.classList.toggle('popup_is-opened');
+  openPopup() {
+    this.popupElement.closest('.popup').classList.add('popup_is-opened');
     this.addButtonCard.setAttribute('disabled', '');
     this.addButtonCard.classList.add('popup__button_disabled');
     this.name.value = '';
     this.link.value = '';
     this.validPopup();
+  }
+
+  closePopup() {
+    this.popupElement.closest('.popup').classList.remove('popup_is-opened');
   }
 
   validPopup() {
@@ -135,6 +139,18 @@ class PopupEdit {
     this.editButtonProfile.classList.remove('popup__button_disabled');
     this.validPopupEdit();
   }
+  openPopupEdit() {
+    this.popupEdit.closest('.popup-edit').classList.add('popup_is-opened');
+    this.editButtonProfile.setAttribute('disabled', '');
+    this.editButtonProfile.classList.add('popup__button_disabled');
+    this.name.value = profileName.textContent;
+    this.job.value = profileJob.textContent;
+    this.validPopupEdit();
+  }
+
+  closePopupEdit() {
+    this.popupEdit.closest('.popup-edit').classList.remove('popup_is-opened');
+  }
 
   validPopupEdit() {
     const errorProfileName = document.getElementById('nameProfileError');
@@ -168,7 +184,7 @@ class PopupEdit {
    apiUser
         .setUser(profileName.textContent, profileJob.textContent)
         .then(() => {
-            popupEdit.toggle();
+            popupEdit.closePopupEdit();
             form.reset();
         })
         .catch((err) => {
@@ -192,15 +208,19 @@ class PopupPic {
     this.popupPic = document.querySelector('.popup-pic');
   };
 
-  openClosePopupPic() {
-    this.popupPic.classList.toggle('popup_is-opened');
-  }
+  openPopupPic() {
+    this.popupPic.closest('.popup-pic').classList.add('popup_is-opened');
+  };
+  
+  closePopupPic() {
+    this.popupPic.closest('.popup-pic').classList.remove('popup_is-opened');
+  };
 
   showPic(event) {
     if (event.target.matches('.place-card__image')) {
       const str = event.target.getAttribute('style');
       const link = str.slice(23, str.length - 3);
-      popupPic.openClosePopupPic();
+      popupPic.openPopupPic();
       const image = document.querySelector('.popup-pic__image');
       image.src = link;
     }
@@ -224,16 +244,17 @@ class Profile {
 }
 
 class ApiUser {
-  constructor() {
+  constructor(options) {
+    this.url = options.url;
+    this.headers = options.headers;
+    this.ownerId = options.ownerId;
   }
 
   getUser() {
-    return fetch(`${API_URL}/users/me`, {
-      headers: {
-        authorization: token.avtorization
-      }
+    return fetch(`${this.url}/users/me`, {
+      headers: this.headers
     })
-    .then((res) => {
+    .then(res => {
       if (res.ok) {
         return res.json();
       }
@@ -242,12 +263,9 @@ class ApiUser {
   }
 
   setUser(name, job) {
-    return fetch(`${API_URL}/users/me`, {
+    return fetch(`${this.url}/users/me`, {
       method: 'PATCH',
-      headers: {
-        authorization: token.avtorization,
-        'Content-Type': 'application/json'
-      },
+      headers: this.headers,
       body: JSON.stringify({
         name: name,
         about: job
@@ -263,18 +281,17 @@ class ApiUser {
 }
 
 class ApiCard {
-  constructor(name, link, token) {
-    this.name = name;
-    this.link = link;
+  constructor(options) {
+    this.url = options.url;
+    this.headers = options.headers;
+    this.ownerId = options.ownerId;
   }
 
   getCard() {
-    return fetch(`${API_URL}/cards`, {
-      headers: {
-          authorization: token.avtorization
-      }
+    return fetch(`${this.url}/cards`, {
+      headers: this.headers
     })
-    .then((res) => {
+    .then(res => {
       if (res.ok) {
         return res.json();
       }
@@ -283,18 +300,15 @@ class ApiCard {
   }
 
   setCard(name, link) {
-    return fetch(`${API_URL}/cards`, {
+    return fetch(`${this.url}/cards`, {
       method: 'POST',
-      headers: {
-        authorization: token.avtorization,
-        'Content-Type': 'application/json'
-      },
+      headers: this.headers,
       body: JSON.stringify({
         name: name,
         link: link
       })
     })
-    .then((res) => {
+    .then(res => {
       console.log(res);
       if (res.ok) {
         return res.json();
@@ -357,7 +371,7 @@ const nameProfile = formEdit.elements.nameProfile;
 const aboutMe = formEdit.elements.aboutMe;
 const token = { avtorization: 'aab06295-ca94-4a87-ba1c-393efa74591e' };
 const myId = {owner: {_id: '5683f6cb2359c61e0c26a85d'}};
-const API_URL = 'http://95.216.175.5/cohort6'
+const API_URL = 'https://praktikum.tk/cohort6'
 
 const link = form.elements.link;
 const name = form.elements.name;
@@ -369,25 +383,39 @@ const popup = new Popup();
 const popupEdit = new PopupEdit();
 const popupPic = new PopupPic();
 const profile = new Profile();
-const apiUser = new ApiUser(token);
-const apiCard = new ApiCard(token);
+
+const apiUser = new ApiUser({
+  url: API_URL, 
+  headers: {
+  authorization: "aab06295-ca94-4a87-ba1c-393efa74591e",
+  "Content-Type": "application/json"
+  }
+});
+
+const apiCard = new ApiCard({
+  url: API_URL, 
+  headers: {
+  authorization: "aab06295-ca94-4a87-ba1c-393efa74591e",
+  "Content-Type": "application/json"
+  }
+});
 const card = new Card();
 
 // События
 plasesList.addEventListener('click', popupPic.showPic);
 
-addButton.addEventListener('click', () => popup.openClosePopup());
+addButton.addEventListener('click', () => popup.openPopup());
 
-editButton.addEventListener('click', () => popupEdit.toggle());
+editButton.addEventListener('click', () => popupEdit.openPopupEdit());
 
 // Закрытие окна добавления картинки
-closeButton.addEventListener('click', () => popup.openClosePopup());
+closeButton.addEventListener('click', () => popup.closePopup());
 
 // Закрытие окна редактирования профиля
-closeEditButton.addEventListener('click', () => popupEdit.toggle());
+closeEditButton.addEventListener('click', () => popupEdit.closePopupEdit());
 
 // Закрытие окна отображения картинки
-closePic.addEventListener('click', () => popupPic.openClosePopupPic());
+closePic.addEventListener('click', () => popupPic.closePopupPic());
 
 //Удаление карточки и лайки
 plasesList.addEventListener('click', function(event) {
@@ -439,7 +467,7 @@ form.addEventListener('submit', function(event) {
       console.log(`Ошибка: ${err}`);
     });
 
-  popup.openClosePopup();
+  popup.closePopup();
   form.reset();
   addButtonCard.setAttribute('disabled', '');
   addButtonCard.classList.add('popup__button_disabled');
@@ -465,27 +493,5 @@ link.addEventListener('input', popup.validPopup);
 nameProfile.addEventListener('input', popupEdit.validPopupEdit);
 aboutMe.addEventListener('input', popupEdit.validPopupEdit);
 
-window.addEventListener('load',function()
-{
-  apiUser.getUser()
-  .then((result) => {
-    console.log(result);
-    return profile.visualData(result.name, result.about, result.avatar);
-  })
-  .catch((err) => {
-    console.log(`Ошибка: ${err}`);
-  })
-})
 
-window.addEventListener('load',function()
-{
-  apiCard.getCard()
-  .then((result) => {
-    console.log(result);
-    return cardlist.render(result);
-  })
-  .catch((err) => {
-    console.log(`Ошибка: ${err}`);
-  })
-})
-export {Card, ApiUser, ApiCard};
+export {Card, CardList, Popup, PopupEdit, PopupPic, Profile, ApiUser, ApiCard};
