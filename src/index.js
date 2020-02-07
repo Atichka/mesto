@@ -20,7 +20,7 @@ const token = { avtorization: 'aab06295-ca94-4a87-ba1c-393efa74591e' };
 const myId = {owner: {_id: '5683f6cb2359c61e0c26a85d'}};
 
 const lang = { validationLenght: 'Должно быть от 2 до 30 символов' }
-const serverUrl = NODE_ENV === 'development' ? 'https://praktikum.tk/cohort6' : 'https://praktikum.tk/cohort6';
+const serverUrl = NODE_ENV === 'development' ? 'http://praktikum.tk/cohort6' : 'https://praktikum.tk/cohort6';
 
 const cardlist = new CardList(document.querySelector('.places-list'));
 const popup = new Popup();
