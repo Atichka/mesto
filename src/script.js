@@ -371,7 +371,7 @@ const nameProfile = formEdit.elements.nameProfile;
 const aboutMe = formEdit.elements.aboutMe;
 const token = { avtorization: 'aab06295-ca94-4a87-ba1c-393efa74591e' };
 const myId = {owner: {_id: '5683f6cb2359c61e0c26a85d'}};
-const API_URL = 'https://praktikum.tk/cohort6'
+const API_URL = 'https://nomoreparties.co/cohort-6'
 
 const link = form.elements.link;
 const name = form.elements.name;
